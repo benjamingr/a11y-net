@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+      "sourceMap": true,
+      "target": "esnext",
+      "strict": true,
+      "baseUrl": ".",
+      "paths": {
+          "*":["*","src/*"]
+      },
+      "resolveJsonModule": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "lib": ["es2015", "es2017"],
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+  },
+  "exclude": [
+      "node_modules",
+  ],
+
+}

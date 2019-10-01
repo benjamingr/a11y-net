@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# bigquery real data jsons
+10k_results.json
+
+# dump for debugging
+dump/

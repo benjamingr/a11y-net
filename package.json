@@ -1,0 +1,46 @@
+{
+  "name": "a11y-net",
+  "version": "1.0.0",
+  "description": "Generate annotations for html",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "show-dump": "http-server ./dump/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjamingr/a11y-net.git"
+  },
+  "keywords": [
+    "accessibility",
+    "tensorflow",
+    "neural",
+    "networks",
+    "rnn",
+    "lstm",
+    "tensorflowjs"
+  ],
+  "author": "Uri Shaked & Benjamin Gruenbaum",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjamingr/a11y-net/issues"
+  },
+  "homepage": "https://github.com/benjamingr/a11y-net#readme",
+  "dependencies": {
+    "@types/filenamify": "^2.0.2",
+    "@types/jsdom": "^12.2.4",
+    "@types/lodash": "^4.14.141",
+    "filenamify": "^4.1.0",
+    "jsdom": "^15.1.1",
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.8",
+    "http-server": "^0.11.1",
+    "jest": "^24.9.0"
+  }
+}
