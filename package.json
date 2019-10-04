@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "make-features": "node -r ts-node/register ./web-to-data/index.ts",
     "show-dump": "http-server ./dump/"
   },
   "repository": {

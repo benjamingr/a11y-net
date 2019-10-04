@@ -10,7 +10,7 @@
       "resolveJsonModule": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "lib": ["es2015", "es2017"],
+      "lib": ["es2015", "es2017", "es2018", "es2019"],
       "module": "CommonJS",
       "moduleResolution": "Node"
   },
