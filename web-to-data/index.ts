@@ -13,15 +13,17 @@ const { appendFile, unlink } = promises;
     const roleButtons = Array.from(page.dom.querySelectorAll('[role=button]'));
     const others = shuffle(Array.from(page.dom.querySelectorAll('body > * > :not([role=button]')));
 
-    for (const [positive, negative] of zip(roleButtons, others)) {
-      if (!positive || !negative) {
+    for (const positive of roleButtons) {
+      if (!positive) {
         break;
       }
       const positiveFeatures = getFeatures(positive);
-      const negativeFeatures = getFeatures(negative);
       if (positiveFeatures) {
         await appendFeatures(positiveFeatures, page.url, 1);
       }
+    }
+    for(const negative of others) {
+      const negativeFeatures = getFeatures(negative);
       if (negativeFeatures) {
         await appendFeatures(negativeFeatures, page.url, 0);
       }
