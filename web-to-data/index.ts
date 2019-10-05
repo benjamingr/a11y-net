@@ -6,7 +6,7 @@ import { promises } from 'fs';
 const { appendFile, unlink, readFile, writeFile } = promises;
 
 (async () => {
-  let i = 0;
+  let i = 0, lastI = 0;
   await unlink('./dump/features.json').catch(() => { })
 
   for await (const page of getParsedContent(path.join(__dirname, './10k_results.json'), x => x.toLowerCase().includes('role="button"'))) {
@@ -17,16 +17,22 @@ const { appendFile, unlink, readFile, writeFile } = promises;
       if (!positive) {
         break;
       }
-      const positiveFeatures = getFeatures(positive);
+      const positiveFeatures = getFeatures(positive, page.dom);
       if (positiveFeatures) {
+        i++;
         await appendFeatures(positiveFeatures, page.url, 1);
       }
     }
     for(const negative of others) {
-      const negativeFeatures = getFeatures(negative);
+      const negativeFeatures = getFeatures(negative, page.dom);
       if (negativeFeatures) {
+        i++;
         await appendFeatures(negativeFeatures, page.url, 0);
       }
+    }
+    if (i > lastI + 100) {
+      lastI = i - i % 100;
+      console.log('Done making', lastI, 'data samples.')
     }
   }
   // now, let's read the whole file, shuffle it and split it into test and train
@@ -47,7 +53,7 @@ async function appendFeatures(features: ReturnType<typeof getFeatures>, url: str
   }) + '\n');
 
 }
-function getFeatures(element: Element) {
+function getFeatures(element: Element, page: Document) {
   const attributes = Array.from(element.attributes).map(x => x.name).filter(attribute =>
     attribute !== 'id' &&
     attribute !== 'name' &&
@@ -74,10 +80,23 @@ function getFeatures(element: Element) {
   function areThereButtonsInside() {
     return element.querySelectorAll('button').length > 0;
   }
-  function containsHandCursor() {
-    return element.ownerDocument!.defaultView!.getComputedStyle(element).cursor === 'pointer';
+
+  const dummy = page.createElement("element-" + Date.now());
+  page.body.appendChild(dummy);
+  var defaultStyles = page.defaultView!.getComputedStyle(dummy);
+
+  function getElementComputedStyle() {
+    const elementStyles = page.defaultView!.getComputedStyle(element);
+    let result: { [key: string]: any } = {};
+    for(const style of Array.from(elementStyles)) {
+      if (elementStyles[style as any] !== defaultStyles[style as any]) {
+        result[style] = elementStyles[style as any];
+      }
+    }
+    return result;
   }
   
+
   return {
     tagName: element.tagName.toUpperCase(), // jsdom has a bug where sometimes tagnames are not returned as uppercase per spec
     parentTagName: element.parentElement!.tagName.toUpperCase(),
@@ -88,9 +107,9 @@ function getFeatures(element: Element) {
     // ariaLabel: element.getAttribute('aria-label'),
     // isModal: element.getAttribute('aria-modal') === 'true',
     name: element.getAttribute('name'),
+    computedStyle: getElementComputedStyle(),
     hasDataset: attributes.some(x => x.startsWith('data-')),
     isMostTextLinks: isMostTextLinks(),
-    containsHandCursor: containsHandCursor(),
     areThereButtonsInside: areThereButtonsInside (),
     id: element.id,
     classList: Array.from(element.classList).join(' '),
