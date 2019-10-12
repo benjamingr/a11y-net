@@ -1,9 +1,9 @@
-import { createReadStream } from 'fs';
-import { JSDOM } from 'jsdom';
 import * as filenamify from 'filenamify';
+import { createReadStream, promises } from 'fs';
+import { JSDOM } from 'jsdom';
 import * as readline from 'readline';
 
-const { writeFile } = require('fs').promises;
+const { writeFile } = promises;
 
 interface ISiteResult {
   accessibilityScore: string;

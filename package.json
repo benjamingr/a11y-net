@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "lint": "tslint --project tsconfig.json",
     "make-features": "node -r ts-node/register ./web-to-data/index.ts",
     "show-dump": "http-server ./dump/"
   },
@@ -42,6 +43,23 @@
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.8",
     "http-server": "^0.11.1",
-    "jest": "^24.9.0"
+    "husky": "^3.0.8",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint --project tsconfig.json -c tslint.commit.json --fix",
+      "prettier --write",
+      "git add"
+    ]
   }
 }

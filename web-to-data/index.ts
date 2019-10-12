@@ -1,14 +1,16 @@
-import { getParsedContent } from './read-data';
+import { promises } from 'fs';
 import { shuffle, uniq } from 'lodash';
 import * as path from 'path';
-import { promises } from 'fs';
+import { getParsedContent } from './read-data';
 
 const { appendFile, unlink, readFile, writeFile } = promises;
 
 (async () => {
-  let i = 0,
-    lastI = 0;
-  await unlink('./dump/features.json').catch(() => {});
+  let i = 0;
+  let lastI = 0;
+  await unlink('./dump/features.json').catch(() => {
+    /* ignore */
+  });
 
   for await (const page of getParsedContent(path.join(__dirname, './10k_results.json'), x =>
     x.toLowerCase().includes('role="button"'),
@@ -54,7 +56,7 @@ async function appendFeatures(features: ReturnType<typeof getFeatures>, url: str
   await appendFile(
     './dump/features.json',
     JSON.stringify({
-      features: features,
+      features,
       label,
       url,
     }) + '\n',
@@ -96,11 +98,11 @@ function getFeatures(element: Element, page: Document) {
 
   const dummy = page.createElement('element-' + Date.now());
   page.body.appendChild(dummy);
-  var defaultStyles = page.defaultView!.getComputedStyle(dummy);
+  const defaultStyles = page.defaultView!.getComputedStyle(dummy);
 
   function getElementComputedStyle() {
     const elementStyles = page.defaultView!.getComputedStyle(element);
-    let result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = {};
     for (const style of Array.from(elementStyles)) {
       if (elementStyles[style as any] !== defaultStyles[style as any]) {
         result[style] = elementStyles[style as any];
