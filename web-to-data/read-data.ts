@@ -1,10 +1,9 @@
 import { createReadStream } from 'fs';
-import { JSDOM } from "jsdom";
+import { JSDOM } from 'jsdom';
 import * as filenamify from 'filenamify';
 import * as readline from 'readline';
 
 const { writeFile } = require('fs').promises;
-
 
 interface ISiteResult {
   accessibilityScore: string;
@@ -16,9 +15,9 @@ interface ISiteResult {
 async function* readContent(filePath: string) {
   const stream = createReadStream(filePath);
   const jsonStream = readline.createInterface({
-    input: stream
+    input: stream,
   });
-  for await(const line of jsonStream) {
+  for await (const line of jsonStream) {
     try {
       yield JSON.parse(line) as ISiteResult;
     } catch (e) {
@@ -28,23 +27,26 @@ async function* readContent(filePath: string) {
 }
 
 interface ISiteData {
-  dom: Document,
+  dom: Document;
   url: string;
   accessibilityScore: number;
 }
 export async function dump(datum: ISiteData) {
-  await writeFile('dump/' + filenamify(datum.url) + '.html', datum.dom.documentElement.outerHTML); 
+  await writeFile('dump/' + filenamify(datum.url) + '.html', datum.dom.documentElement.outerHTML);
 }
 
-export async function* getParsedContent(filePath: string, bodyFilter: (body: string) => boolean): AsyncIterable<ISiteData> {
-  for await(const item of readContent(filePath)) {
+export async function* getParsedContent(
+  filePath: string,
+  bodyFilter: (body: string) => boolean,
+): AsyncIterable<ISiteData> {
+  for await (const item of readContent(filePath)) {
     if (!bodyFilter(item.body)) {
       continue;
     }
     yield {
       dom: new JSDOM(item.body).window.document,
       url: item.pageUrl,
-      accessibilityScore: Number(item.accessibilityScore)
+      accessibilityScore: Number(item.accessibilityScore),
     };
   }
 }
