@@ -65,3 +65,6 @@ typings/
 
 # dump for debugging
 dump/
+
+# Trained models
+*.h5
