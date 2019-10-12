@@ -1,4 +1,4 @@
-import { getParsedContent, dump } from './read-data';
+import { getParsedContent } from './read-data';
 import { shuffle, uniq } from 'lodash';
 import * as path from 'path';
 import { promises } from 'fs';
